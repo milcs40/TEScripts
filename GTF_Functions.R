@@ -129,3 +129,7 @@ makeGTF <- function(TE_Annotation) {
   # We now return a list with the three dataframes that can then be loaded individually.
   return(list(original = GTF, TE_Type = GTF_typeTE, TE_Individual = GTF_individualTE))
 }
+
+# To run the above function, I use the 'zeallot' library, to create multiple objects from a single return.
+library(zeallot)
+c(UCSC_hg38_rmsk, UCSC_hg38_rmsk_TEType, UCSC_hg38_rmsk_TEInd) %<-% makeGTF("~/Resources/TE_annotations/hg38_rmsk_TEFull.gtf")
