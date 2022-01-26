@@ -61,9 +61,9 @@ makeGTF <- function(TE_Annotation) {
     df$repLeft <- gsub("\\)", "", as.character(df$repLeft))
     
     # We can now define the columns we want to convert to numeric
-    toNumeric <- c("swScore", "milliDiv", "milliDel", "milliIns", "genoStart", "genoEnd", "genoLeft", "repStart", "repEnd", "repLeft", "id")
+    toInteger <- c("swScore", "milliDiv", "milliDel", "milliIns", "genoStart", "genoEnd", "genoLeft", "repStart", "repEnd", "repLeft", "id")
     df <- df %>% 
-      mutate_at(toNumeric, as.numeric)
+      mutate_at(toInteger, as.integer)
   } else if (source == "U") {
     # Load an UCSC GTF file, downloaded from the table manager section
     df <- fread(file = TE_Annotation, header = T, sep = "\t", data.table = FALSE)
@@ -106,7 +106,7 @@ makeGTF <- function(TE_Annotation) {
   # 1 to all genome start positions.
   # On the other hand, Repeatmasker annotation file, is already 1-based and doesn't need anything done
   if (source == "U") {
-    df$genoStart <- df$genoStart + 1
+    df$genoStart <- as.integer(df$genoStart + 1)
   } 
   
   # With all this done, we can create the GTF files. 
