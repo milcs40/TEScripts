@@ -131,5 +131,5 @@ makeGTF <- function(TE_Annotation) {
 }
 
 # To run the above function, I use the 'zeallot' library, to create multiple objects from a single return.
-library(zeallot)
-c(UCSC_hg38_rmsk, UCSC_hg38_rmsk_TEType, UCSC_hg38_rmsk_TEInd) %<-% makeGTF("~/Resources/TE_annotations/hg38_rmsk_TEFull.gtf")
+# library(zeallot)
+# c(UCSC_hg38_rmsk_unmodified, UCSC_hg38_rmsk_TEClass, UCSC_hg38_rmsk_TEIndividual) %<-% makeGTF("pathToTEAnnotation")
