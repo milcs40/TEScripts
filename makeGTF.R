@@ -103,7 +103,9 @@ makeGTF <- function(TE_Annotation) {
                .after = "id")
   
   # UCSC tables are 0-based position. This is, the start of the sequences start at 0, and not 1. GTFs have to be 1-based. As such, we need to add
-  # 1 to all genome start positions.
+  # 1 to all genome start positions. 
+  # Adding +1 will transform the datatype from integer to numerical, which might have problems when using these GTFs down the line. 
+  # As such, we will make sure the column is kept as integer.
   # On the other hand, Repeatmasker annotation file, is already 1-based and doesn't need anything done
   if (source == "U") {
     df$genoStart <- as.integer(df$genoStart + 1)
