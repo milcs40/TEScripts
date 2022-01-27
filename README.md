@@ -10,3 +10,8 @@ It takes annotation files from either UCSC (UCSC Table Download) or RepeatMasker
 To run the function, I use the `zeallot` library, that allows creating multiple objects from a single return. 
 The function can be called using:
 `c(rmsk_unmodified_GTF, rmsk_TEClass_GTF, rms_TEIndividual_GTF) %<% makeGTF("pathToTEAnnotation")`
+
+## extract_attributes.R
+This script contains the `extract_attributes` function, that I copied from https://www.biostars.org/p/272889/#418833
+It's a usefull function that allows extracting, from a GTF attributes column, a given attribute.
+
