@@ -12,6 +12,11 @@ The function can be called using:
 `c(rmsk_unmodified_GTF, rmsk_TEClass_GTF, rms_TEIndividual_GTF) %<% makeGTF("pathToTEAnnotation")`
 
 ## extract_attributes.R
+
 This script contains the `extract_attributes` function, that I copied from https://www.biostars.org/p/272889/#418833
 It's a usefull function that allows extracting, from a GTF attributes column, a given attribute.
 
+## chromAnnotConv.R
+
+This script will use a chromosome alias table from UCSC (http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/chromAlias.txt.gz)
+to convert the chromosome annotation in a GTF file (first column), to a choosen annotation: `UCSC`, `Ensembl`, `Genbank` or `RefSeq`.
