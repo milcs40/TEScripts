@@ -1,0 +1,42 @@
+############################################################################################################################
+#' orderGTF_UCSCAnnot
+#' @author Miguel Casanova
+#' 
+#' This function will take a GTF loaded in memory and reorganize rows according to chromosome and start sites.
+#' At the moment, it only orders GTFs with UCSC annotations (e.g. GTFs loaded from UCSC table download, or Repeatmasker).
+#' 
+#' INPUT:
+#'  @param GTF  GTF table, in a standard format. The script will assume that the chromosome location is in the first column.
+#'  The chromosome annotation has to be in an UCSC format (e.g. chrX for canonical, chrUn_KI270757v1 for non-canonical).
+#' OUTPUT:
+#'  @return Ordered GTF table, with all of the chromosomal annotations in column 1, ordered as canonical chromosomes, followed
+#'  by non-canonical ones.
+
+orderGTF_UCSCAnnot <- function(GTF) {
+  GTF_ordered <- GTF %>%
+    filter(grepl("chr\\d+$", seqname)) %>% # We first filter only canonical chromosomes (chr1-chr22), excluding chrX, chrY and chrM
+    arrange(nchar(seqname), seqname, start) %>% # We filter the above rows using nchar (to allow ordering single and double digits correctly), 
+                                                # followed by chromosome name and start position
+    bind_rows(GTF %>% 
+                filter(grepl("chr[a-zA-Z]$", seqname)) %>% # To the above, we add the rows correspoding to chrX, chrY and chrM
+                arrange(match(seqname, c("chrX", "chrY", "chrM")), start)) %>% # And arrange them by name and start position
+    bind_rows(GTF %>%
+                filter(grepl("chr\\d+_", seqname)) %>% # We then select non-canonical chromosomes (as they have a `_`), excluding sexual chromosomes
+                separate(seqname, c("seqname1","seqname2", "seqname3"), remove = F) %>% # To better sort the chromosome names, these are broken in 3 (separated by `_`)
+                                                                                        # The first column is the base chromosome, the 2nd is the assembly, the 3rd the patch status
+                arrange(nchar(seqname1), seqname1, seqname3, seqname2, start) %>% # Chromosomes are ordered by chromosome name, followed by patch status (random, alt, fix)
+                                                                                  # followed by assembly nomemclature and finally the start position
+                dplyr::select(-seqname1, -seqname2, -seqname3)) %>% # The three columns are removed.
+    bind_rows(GTF %>% 
+                filter(grepl("chr[a-zA-Z]_", seqname)) %>%  # Similar to above, but for sexual chromosomes.
+                separate(seqname, c("seqname1","seqname2", "seqname3"), remove = F) %>%
+                arrange(match(seqname1, c("chrX", "chrY", "chrM")), seqname3, seqname2, start) %>%
+                dplyr::select(-seqname1, -seqname2, -seqname3)) %>%
+    bind_rows(GTF %>% 
+                filter(grepl("chrUn_", seqname)) %>% # Similar to above, but for assemblies without known chromosomal origin.
+                separate(seqname, c("seqname1","seqname2"), remove = F) %>%
+                arrange(seqname1, seqname2, start) %>%
+                dplyr::select(-seqname1, -seqname2))
+  
+  return(GTF_ordered)
+}
